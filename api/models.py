@@ -7,14 +7,13 @@ class CustomUser(models.Model):
         ('Consumer', 'Consumer')
     ]
 
-    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
     role = models.CharField(max_length=8, choices=ROLE_CHOICES)
     mobile = models.CharField(max_length=20, default = "0000000000")
-    location_latitude = models.FloatField(default="null")
-    location_longitude = models.FloatField(default="null")
+    location_latitude = models.CharField(max_length=100, default="null")
+    location_longitude = models.CharField(max_length=100, default="null")
 
     def __str__(self):
         return self.username
