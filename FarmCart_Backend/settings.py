@@ -28,6 +28,7 @@ DEBUG = decouple_config("DEBUG", default=False, cast=bool)
 # ALLOWED_HOSTS = decouple_config(
 #     "ALLOWED_HOSTS", cast=lambda v: [s.strip() for s in v.split(",")]
 # )
+
 ALLOWED_HOSTS = ["ajayvishnu.pythonanywhere.com", "http://127.0.0.1:8000/", "*"]
 
 # Application definition
