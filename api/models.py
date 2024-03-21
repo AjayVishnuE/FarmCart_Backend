@@ -12,8 +12,8 @@ class CustomUser(models.Model):
     password = models.CharField(max_length=100)
     role = models.CharField(max_length=8, choices=ROLE_CHOICES)
     mobile = models.CharField(max_length=20, default = "0000000000")
-    location_latitude = models.CharField(max_length=100, default="null")
-    location_longitude = models.CharField(max_length=100, default="null")
+    location_latitude = models.CharField(max_length=100, default=None)
+    location_longitude = models.CharField(max_length=100, default=None)
 
     def __str__(self):
         return self.username
