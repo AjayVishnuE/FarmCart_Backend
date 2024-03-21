@@ -108,6 +108,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+EMAIL_BACKEND = decouple_config("EMAIL_BACKEND")
+EMAIL_HOST = decouple_config("EMAIL_HOST")
+EMAIL_PORT = decouple_config("EMAIL_PORT")
+EMAIL_USE_TLS = decouple_config("EMAIL_USE_TLS")
+EMAIL_HOST_USER = decouple_config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = decouple_config("EMAIL_HOST_PASSWORD")
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 

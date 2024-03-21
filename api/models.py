@@ -17,6 +17,14 @@ class CustomUser(models.Model):
 
     def __str__(self):
         return self.username
+    
+class OTPVerification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.otp}"
 
 class Product(models.Model):
     seller = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Farmer'})
@@ -67,3 +75,8 @@ class Review(models.Model):
     rating = models.PositiveSmallIntegerField()
     comment = models.TextField()
     review_datetime = models.DateTimeField(auto_now_add=True)
+
+class Search(models.Model):
+    search_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Consumer'})
+    search_keyword = models.CharField(max_length=200)

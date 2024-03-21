@@ -1,9 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from api.models import CustomUser
+from django.core.mail import send_mail
+import random
+from django.utils import timezone
+from datetime import timedelta
+from api.models import CustomUser, OTPVerification
 from django.core.exceptions import ObjectDoesNotExist
-from .user_serializer import CustomUserSerializer
+from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer
 from rest_framework.exceptions import APIException
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -73,3 +77,54 @@ class LogoutAPIView(APIView):
             'message': "SUCCESS"
         }
         return response
+
+
+class ForgotPasswordView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = ForgotPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            print(email)
+            user = CustomUser.objects.filter(email=email).first()
+            if not user:
+                return Response({'error': 'User with this email does not exist.'}, status=400)
+            
+            otp = str(random.randint(100000, 999999))
+            
+            OTPVerification.objects.create(user=user, otp=otp)
+            print(otp)
+            send_mail(
+                'Reset Your Password',
+                f'Your OTP is {otp}.',
+                'teamfarmcart@gmail.com',  
+                [email],
+                fail_silently=False,
+            )
+            return Response({'message': 'OTP sent to your email.'}, status=200)
+        return Response(serializer.errors, status=400)
+    
+class VerifyOTPView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = OTPVerificationSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            otp = serializer.validated_data['otp']
+            
+            user = CustomUser.objects.filter(email=email).first()
+            if not user:
+                return Response({'error': 'Invalid email address.'}, status=400)
+            
+            otp_valid_time = 10 
+            try:
+                otp_record = OTPVerification.objects.get(
+                    user=user, 
+                    otp=otp, 
+                    created_at__gte=timezone.now() - timedelta(minutes=otp_valid_time)
+                )
+
+                otp_record.delete()
+
+                return Response({'message': 'OTP verified successfully!'}, status=200)
+            except OTPVerification.DoesNotExist:
+                return Response({'error': 'Invalid or expired OTP.'}, status=400)
+        return Response(serializer.errors, status=400)
