@@ -7,10 +7,10 @@ from django.utils import timezone
 from datetime import timedelta
 from api.models import CustomUser, OTPVerification
 from django.core.exceptions import ObjectDoesNotExist
-from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer
+from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer, LocationSerializer
 from rest_framework.exceptions import APIException
 from django.contrib.auth.hashers import make_password, check_password
-
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 from .authentication import create_access_token, create_refresh_token, decode_access_token, decode_refresh_token
 
@@ -39,7 +39,6 @@ class LoginAPIView(APIView):
                 user = CustomUser.objects.get(email = EoM)
             except ObjectDoesNotExist:
                 user = None
-        print(user)
         if user is None:
             raise APIException('Invalid Credentials')
 
@@ -128,3 +127,38 @@ class VerifyOTPView(APIView):
             except OTPVerification.DoesNotExist:
                 return Response({'error': 'Invalid or expired OTP.'}, status=400)
         return Response(serializer.errors, status=400)
+
+class LocationView(APIView):
+    def post(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization', None)
+        if not token:
+            return Response({'error': 'Authorization header is missing'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not token.startswith('Bearer '):
+            return Response({'error': 'Authorization header must start with Bearer'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        token = token[7:]
+
+        try:
+            print("sdfsf")
+            user_id = decode_access_token(token)
+            print(user_id)
+        except (ExpiredSignatureError):
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+        except (InvalidTokenError):
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except user.DoesNotExist:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        
+        data = request.data
+        print(data)
+        serializer = LocationSerializer(user, data=request.data, partial=True)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            print("ok")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

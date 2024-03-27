@@ -1,11 +1,13 @@
 import jwt, datetime, uuid
 from rest_framework import exceptions
+from django.conf import settings
+
 
 def create_access_token(id):
     str_id = str(id)  
     return jwt.encode({
         'user_id': str_id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=30),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=3000),
         'iat': datetime.datetime.utcnow(),
     }, 'access_secret', algorithm='HS256')
 
@@ -19,12 +21,23 @@ def create_refresh_token(id):
 
 def decode_access_token(token):
     try:
+        print("sdad")
         payload = jwt.decode(token, 'access_secret', algorithms=['HS256'])
-        return uuid.UUID(payload['user_id'])  
+        print("sdadasa")
+        return payload['user_id']  
     except jwt.ExpiredSignatureError:
         raise exceptions.AuthenticationFailed('Token expired, login again')
     except jwt.InvalidTokenError:
         raise exceptions.AuthenticationFailed('Invalid token')
+    
+# def decode_access_token(token):
+#     try:
+#         payload = jwt.decode(token, 'access_secret', algorithms=['HS256'])
+#         return uuid.UUID(payload['user_id'])  
+#     except jwt.ExpiredSignatureError:
+#         raise exceptions.AuthenticationFailed('Token expired, login again')
+#     except jwt.InvalidTokenError:
+#         raise exceptions.AuthenticationFailed('Invalid token')
 
 def decode_refresh_token(token):
     try:
