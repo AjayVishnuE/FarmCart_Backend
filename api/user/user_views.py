@@ -1,18 +1,18 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+import random
+from datetime import timedelta
+from django.utils import timezone
 from rest_framework import status
 from django.core.mail import send_mail
-import random
-from django.utils import timezone
-from datetime import timedelta
-from api.models import CustomUser, OTPVerification
-from django.core.exceptions import ObjectDoesNotExist
-from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer, LocationSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.exceptions import APIException
-from django.contrib.auth.hashers import make_password, check_password
+from django.core.exceptions import ObjectDoesNotExist
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+from django.contrib.auth.hashers import make_password, check_password
 
+from api.models import CustomUser, OTPVerification
 from .authentication import create_access_token, create_refresh_token, decode_access_token, decode_refresh_token
+from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer, LocationSerializer
 
 class RegistrationAPIView(APIView):
     def post(self, request):
@@ -139,14 +139,7 @@ class LocationView(APIView):
         
         token = token[7:]
 
-        try:
-            print("sdfsf")
-            user_id = decode_access_token(token)
-            print(user_id)
-        except (ExpiredSignatureError):
-            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
-        except (InvalidTokenError):
-            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        user_id = decode_access_token(token)
 
         try:
             user = CustomUser.objects.get(id=user_id)

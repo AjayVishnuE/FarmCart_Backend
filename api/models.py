@@ -30,6 +30,7 @@ class Product(models.Model):
     seller = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Farmer'})
     product_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product_name = models.CharField(max_length=100)
+    product_image = models.ImageField(upload_to='images/', null=True, blank=True)
     product_description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField()
