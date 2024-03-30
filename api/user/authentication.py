@@ -1,5 +1,8 @@
 import jwt, datetime, uuid
+from rest_framework import status
 from rest_framework import exceptions
+from rest_framework.response import Response
+
 
 
 def create_access_token(id):
@@ -36,6 +39,16 @@ def decode_refresh_token(token):
     except jwt.InvalidTokenError:
         raise exceptions.AuthenticationFailed('Invalid token')
     
+def get_user_id(token):
+    if not token:
+        return Response({'error': 'Authorization header is missing'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not token.startswith('Bearer '):
+        return Response({'error': 'Authorization header must start with Bearer'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    token = token[7:]
+    user_id = decode_access_token(token)
+    return token
 
 # def create_access_token(id):
 #     return jwt.encode({
