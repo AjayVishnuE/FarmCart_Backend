@@ -3,6 +3,7 @@ from .wishlist_views import WishlistCrudView
 
 
 urlpatterns = [
-    path('wishlist-crud/<uuid:product_id>/', WishlistCrudView.as_view(), name='seller-crud'),
+    path('wishlist-crud/', WishlistCrudView.as_view(), name='wishlist-crud'),
+    path('wishlist-crud/<uuid:wishlist_id>/', WishlistCrudView.as_view(), name='wishlist-crud'),
 
 ]

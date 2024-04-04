@@ -40,13 +40,13 @@ class WishlistCrudView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, cart_id):
+    def delete(self, request, wishlist_id):
         token = request.headers.get('Authorization', None)
         try:
             user_id = get_user_id(token)  
             user_id = UUID(user_id)  
 
-            wishlist_product = Wishlist.objects.get(cart_id=cart_id)
+            wishlist_product = Wishlist.objects.get(wishlist_id=wishlist_id)
             if wishlist_product.user.id == user_id: 
                 wishlist_product.delete()
                 return Response({'message': 'Product deleted'}, status=status.HTTP_204_NO_CONTENT)
