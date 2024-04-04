@@ -39,7 +39,7 @@ class SellerProductCrudView(APIView):
     def patch(self, request, product_id):
             try:
                 product = Product.objects.get(product_id=product_id)
-            except Product.DoesNotExist:
+            except product.DoesNotExist:
                 return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
             serializer = ProductSerializer(product, data=request.data, partial=True)
             if serializer.is_valid():
@@ -52,7 +52,7 @@ class SellerProductCrudView(APIView):
     def delete(self, request, product_id):
             try:
                 product = Product.objects.get(product_id=product_id)
-            except Product.DoesNotExist:
+            except product.DoesNotExist:
                 return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
             product.delete()
             return Response({'message': 'Product deleted'}, status=status.HTTP_204_NO_CONTENT)

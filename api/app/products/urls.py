@@ -6,6 +6,7 @@ from .products_views import ProductsListView, SellerProductCrudView
 
 urlpatterns = [
     path('productlist/', ProductsListView.as_view(), name='product-list'),
+    path('seller-crud/', SellerProductCrudView.as_view(), name='seller-crud'),
     path('seller-crud/<uuid:product_id>/', SellerProductCrudView.as_view(), name='seller-crud'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

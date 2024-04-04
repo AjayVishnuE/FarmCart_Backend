@@ -2,6 +2,7 @@ import jwt, datetime, uuid
 from rest_framework import status
 from rest_framework import exceptions
 from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed
 
 
 
@@ -47,8 +48,11 @@ def get_user_id(token):
         return Response({'error': 'Authorization header must start with Bearer'}, status=status.HTTP_400_BAD_REQUEST)
     
     token = token[7:]
-    user_id = decode_access_token(token)
-    return token
+    try:
+        user_id = decode_access_token(token)  
+        return user_id
+    except AuthenticationFailed as e:
+        raise e
 
 # def create_access_token(id):
 #     return jwt.encode({
