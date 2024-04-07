@@ -52,8 +52,8 @@ class LoginAPIView(APIView):
 
         response.set_cookie(key='refreshToken', value=refresh_token, httponly=True)
         response.data = {
-            'access-token': access_token,
-            'refresh-token': refresh_token
+            'accessToken': access_token,
+            'refreshToken': refresh_token
         }
 
         return response
@@ -137,21 +137,20 @@ class LocationView(APIView):
         if not token.startswith('Bearer '):
             return Response({'error': 'Authorization header must start with Bearer'}, status=status.HTTP_400_BAD_REQUEST)
         
-        token = token[7:]
+        token = token.split('Bearer ')[1]  
 
         user_id = decode_access_token(token)
+        if not user_id:
+            return Response({'error': 'Invalid or expired token'}, status=status.HTTP_401_UNAUTHORIZED)
 
         try:
             user = CustomUser.objects.get(id=user_id)
-        except user.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
         
-        data = request.data
-        print(data)
-        serializer = LocationSerializer(user, data=request.data, partial=True)
-        print(serializer)
+        serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            print("ok")
+            location_instance = serializer.save(user=user)  
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
