@@ -137,8 +137,7 @@ class LocationView(APIView):
         if not token.startswith('Bearer '):
             return Response({'error': 'Authorization header must start with Bearer'}, status=status.HTTP_400_BAD_REQUEST)
         
-        token = token.split('Bearer ')[1]  
-
+        token = token.split('Bearer ')[1]
         user_id = decode_access_token(token)
         if not user_id:
             return Response({'error': 'Invalid or expired token'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -147,10 +146,10 @@ class LocationView(APIView):
             user = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = LocationSerializer(data=request.data)
+
+        serializer = LocationSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
-            location_instance = serializer.save(user=user)  
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -26,10 +26,6 @@ class LocationSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id','location_latitude', 'location_longitude']
 
-            
-    def create(self, validated_data):
-        return super().create(validated_data)
-
     def update(self, instance, validated_data):
         instance.location_latitude = validated_data.get('location_latitude', instance.location_latitude)
         instance.location_longitude = validated_data.get('location_longitude', instance.location_longitude)
