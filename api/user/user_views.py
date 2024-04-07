@@ -45,15 +45,15 @@ class LoginAPIView(APIView):
         if not user or not check_password(request.data['password'], user.password):
             raise APIException('Invalid Credentials')
 
-        access_token = create_access_token(user.id)
-        refresh_token = create_refresh_token(user.id)
+        accessToken = create_access_token(user.id)
+        refreshToken = create_refresh_token(user.id)
 
         response = Response()
 
-        response.set_cookie(key='refreshToken', value=refresh_token, httponly=True)
+        response.set_cookie(key='refreshToken', value=refreshToken, httponly=True)
         response.data = {
-            'accessToken': access_token,
-            'refreshToken': refresh_token
+            'accessToken': accessToken,
+            'refreshToken': refreshToken
         }
 
         return response
