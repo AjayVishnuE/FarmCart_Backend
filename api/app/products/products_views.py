@@ -3,9 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from api.models import Product
-from .products_serializer import ProductSerializer
 from api.user.authentication import get_user_id
-
+from .products_serializer import ProductSerializer, ProductDetailsSerializer
 
 
 class ProductsListView(APIView):
@@ -14,6 +13,21 @@ class ProductsListView(APIView):
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+class ProductdetailsView(APIView):
+    def get_object(self, product_id):
+        try:
+            return Product.objects.get(product_id=product_id)
+        except Product.DoesNotExist:
+            raise Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+    def get(self, request, product_id):
+        token = request.headers.get('Authorization', None)
+        user_id = get_user_id(token)
+        product = self.get_object(product_id)
+        serializer = ProductDetailsSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 class SellerProductCrudView(APIView):
     def get(self,request):

@@ -85,3 +85,9 @@ class Search(models.Model):
     search_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Consumer'})
     search_keyword = models.CharField(max_length=200)
+
+class FarmerDetails(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    overallrating = models.CharField(max_length=5)
+    farms = models.TextField()
+    Verified =  models.BooleanField(default=True)
