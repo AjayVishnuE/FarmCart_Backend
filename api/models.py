@@ -41,6 +41,19 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+    
+class Address(models.Model):
+    Address_Type = [
+        ('Home', 'Home'),
+        ('Office', 'Office'),
+        ('Other', 'Other')
+    ]
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    address_type = models.CharField(max_length=10, choices=Address_Type)
+    name = models.CharField(max_length=25)
+    address = models.TextField()
+    pincode = models.CharField(max_length=10)
+    phonenumber = models.CharField(max_length=15)
 
 class Order(models.Model):
     ORDER_STATUS_CHOICES = [
@@ -51,6 +64,7 @@ class Order(models.Model):
 
     order_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     buyer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Consumer'})
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     order_status = models.CharField(max_length=10, choices=ORDER_STATUS_CHOICES)
     order_datetime = models.DateTimeField(auto_now_add=True)

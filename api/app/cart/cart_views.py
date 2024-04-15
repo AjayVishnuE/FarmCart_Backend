@@ -6,15 +6,21 @@ from rest_framework.exceptions import NotFound, PermissionDenied
 
 
 from api.models import Cart
-from .cart_serializer import CartSerializer
+from .cart_serializer import CartSerializer, CartDisplaySerializer
 from api.user.authentication import get_user_id
 
 class CartCrudView(APIView):
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         token = request.headers.get('Authorization', None)
+        if not token:
+            return Response({"error": "Authorization token not provided"}, status=status.HTTP_401_UNAUTHORIZED)
+
         user_id = get_user_id(token)
-        cart_list = Cart.objects.filter(user = user_id)
-        serializer = CartSerializer(cart_list, many = True)
+        if not user_id:
+            return Response({"error": "Token is invalid or expired"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        cart_list = Cart.objects.filter(user=user_id)
+        serializer = CartDisplaySerializer(cart_list, many=True)  # Note the `many=True` for queryset serialization
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
