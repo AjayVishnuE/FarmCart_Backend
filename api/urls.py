@@ -9,5 +9,5 @@ urlpatterns = [
     path('orderdetails/', include('api.app.orderdetails.urls')),
     path('chat/', include('api.app.Chat.urls')),
     path('address/', include('api.app.Address.urls')),
-
+    path('profile/', include('api.app.profile.urls')),
 ]

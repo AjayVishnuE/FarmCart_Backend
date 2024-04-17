@@ -101,7 +101,7 @@ class Search(models.Model):
     search_keyword = models.CharField(max_length=200)
 
 class FarmerDetails(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Farmer'})
     overallrating = models.CharField(max_length=5)
     farms = models.TextField()
     Verified =  models.BooleanField(default=True)

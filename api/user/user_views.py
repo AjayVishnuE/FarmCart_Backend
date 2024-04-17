@@ -2,6 +2,7 @@ import random
 from datetime import timedelta
 from django.utils import timezone
 from rest_framework import status
+from django.http import JsonResponse
 from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,13 +12,12 @@ from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from django.contrib.auth.hashers import make_password, check_password
 
 from api.models import CustomUser, OTPVerification
-from .authentication import create_access_token, create_refresh_token, decode_access_token, decode_refresh_token
 from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer, LocationSerializer
+from .authentication import create_access_token, create_refresh_token, decode_access_token, decode_refresh_token, get_user_id
 
 class RegistrationAPIView(APIView):
     def post(self, request):
         serializer = CustomUserSerializer(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -153,3 +153,13 @@ class LocationView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UsernameView(APIView):
+    def get(self, request):
+        try:
+            token = request.headers.get('Authorization', None)
+            user_id = get_user_id(token)
+            user = CustomUser.objects.get(id=user_id)
+            return JsonResponse({"username":user.username}, status=200)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
