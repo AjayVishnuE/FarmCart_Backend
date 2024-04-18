@@ -7,14 +7,14 @@ from rest_framework.exceptions import NotFound, PermissionDenied
 
 from api.models import Wishlist
 from api.user.authentication import get_user_id
-from .wishlist_serializer import WishlistSerializer
+from .wishlist_serializer import WishlistSerializer, WishlistGetSerializer
 
 class WishlistCrudView(APIView):
     def get(self, request):
         token = request.headers.get('Authorization', None) 
         user_id = get_user_id(token)
         cart_list = Wishlist.objects.filter(user = user_id)
-        serializer = WishlistSerializer(cart_list, many = True)
+        serializer = WishlistGetSerializer(cart_list, many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
