@@ -37,6 +37,7 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField()
     available = models.BooleanField(default=True)
     category = models.CharField(max_length=100)
+    product_rating = models.PositiveSmallIntegerField(default=0)
     upload_datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -99,9 +100,13 @@ class Search(models.Model):
     search_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Consumer'})
     search_keyword = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
 class FarmerDetails(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Farmer'})
-    overallrating = models.CharField(max_length=5)
+    farmer_rating = models.CharField(max_length=5)
     farms = models.TextField()
     Verified =  models.BooleanField(default=True)

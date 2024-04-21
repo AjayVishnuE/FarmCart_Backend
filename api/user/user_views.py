@@ -160,6 +160,6 @@ class UsernameView(APIView):
             token = request.headers.get('Authorization', None)
             user_id = get_user_id(token)
             user = CustomUser.objects.get(id=user_id)
-            return JsonResponse({"username":user.username}, status=200)
+            return JsonResponse({"username":user.username,"role":user.role}, status=200)
         except CustomUser.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
