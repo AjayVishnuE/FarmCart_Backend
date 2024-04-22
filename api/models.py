@@ -92,7 +92,7 @@ class Review(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     reviewer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Consumer'})
-    rating = models.PositiveSmallIntegerField()
+    rating = models.CharField(max_length=5)
     comment = models.TextField()
     review_datetime = models.DateTimeField(auto_now_add=True)
 
@@ -106,7 +106,7 @@ class Search(models.Model):
         ordering = ['-created_at']
 
 class FarmerDetails(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Farmer'})
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Farmer'})
     farmer_rating = models.CharField(max_length=5)
     farms = models.TextField()
-    Verified =  models.BooleanField(default=True)
+    Verified = models.BooleanField(default=True)

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from api.models import Product
 from api.user.authentication import get_user_id
-from .products_serializer import ProductSerializer, ProductDetailsSerializer
+from .products_serializer import ProductSerializer, ProductDetailsSerializer, SellerProductDetailSerializer
 
 
 class ProductsListView(APIView):
@@ -27,7 +27,14 @@ class ProductdetailsView(APIView):
         serializer = ProductDetailsSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+class ProductSellerDetailView(APIView):
+    def get(self, request, product_id):
+        try:
+            product = Product.objects.get(product_id=product_id)
+            serializer = SellerProductDetailSerializer(product, context={'request': request})
+            return Response(serializer.data)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class SellerProductCrudView(APIView):
     def get(self,request):

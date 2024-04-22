@@ -8,7 +8,7 @@ from django.http import Http404
 
 from .search_serializer import SearchSerializer,ProductSerializer
 from api.models import Search, Product
-from user.authentication import get_user_id
+from api.user.authentication import get_user_id
 
 
 class RecentUserSearchesAPIView(APIView):
