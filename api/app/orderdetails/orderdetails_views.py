@@ -1,4 +1,5 @@
 from uuid import UUID
+from django.db.models import F
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -17,13 +18,25 @@ class OrderDetailView(APIView):
 
     def post(self, request, order_id):
         data = request.data
-        data['order'] = order_id  # Ensure the order ID is set to the current order
+        data['order'] = order_id 
         serializer = OrderDetailSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            order_detail = serializer.save()
+
+            product = order_detail.product
+            if product.quantity < order_detail.quantity:
+                return Response({'error': 'Not enough quantity available.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            product.quantity = F('quantity') - order_detail.quantity
+            product.sold_quantity = F('sold_quantity') + order_detail.quantity
+            product.save()
+
+            product.refresh_from_db()
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
     def patch(self, request, orderDetail_id):
         pass
 

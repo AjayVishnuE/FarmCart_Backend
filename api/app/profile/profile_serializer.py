@@ -4,7 +4,7 @@ from api.models import CustomUser, Order, OrderDetail, Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('product_name', 'product_image', 'price')
+        fields = ('product_id','product_name', 'product_image', 'price')
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)

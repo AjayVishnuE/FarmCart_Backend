@@ -8,5 +8,5 @@ class SearchSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
-        Model = Product
+        model = Product
         fields = ["product_id","product_name","product_image","price"]

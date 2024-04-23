@@ -12,4 +12,6 @@ urlpatterns = [
     path('profile/', include('api.app.profile.urls')),
     path('search/', include('api.app.search.urls')),
     path('farmerdashboard/', include('api.app.farmer_dashboard.urls')),
+    path('farmerdetails/', include('api.app.farmerdetails.urls')),
+    path('review/', include('api.app.review.urls')),
 ]
