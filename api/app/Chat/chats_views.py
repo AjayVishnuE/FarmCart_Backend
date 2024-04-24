@@ -1,51 +1,86 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from transformers import AutoTokenizer, AutoModelForQuestionAnswering
-import torch
 
-tokenizer = AutoTokenizer.from_pretrained("bert-large-uncased-whole-word-masking-finetuned-squad")
-model = AutoModelForQuestionAnswering.from_pretrained("bert-large-uncased-whole-word-masking-finetuned-squad")
 
-def answer_question(question, context):
-    inputs = tokenizer.encode_plus(question, context, add_special_tokens=True, return_tensors="pt")
-    output = model(**inputs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
+# from transformers import AutoTokenizer, AutoModelForQuestionAnswering
+# import torch
+
+# tokenizer = AutoTokenizer.from_pretrained("bert-large-uncased-whole-word-masking-finetuned-squad")
+# model = AutoModelForQuestionAnswering.from_pretrained("bert-large-uncased-whole-word-masking-finetuned-squad")
+
+# def answer_question(question, context):
+#     inputs = tokenizer.encode_plus(question, context, add_special_tokens=True, return_tensors="pt")
+#     output = model(**inputs)
     
-    answer_start_scores, answer_end_scores = output.start_logits, output.end_logits
+#     answer_start_scores, answer_end_scores = output.start_logits, output.end_logits
     
-    # Debug outputs
-    print("Start logits:", answer_start_scores)
-    print("End logits:", answer_end_scores)
+#     # Debug outputs
+#     print("Start logits:", answer_start_scores)
+#     print("End logits:", answer_end_scores)
     
-    answer_start = torch.argmax(answer_start_scores)  # Index of the start of the answer
-    answer_end = torch.argmax(answer_end_scores) + 1  # Index of the end of the answer
+#     answer_start = torch.argmax(answer_start_scores)  # Index of the start of the answer
+#     answer_end = torch.argmax(answer_end_scores) + 1  # Index of the end of the answer
 
-    # Ensure start and end indices are valid
-    if answer_start >= answer_end:
-        print("Invalid span found: Start index is after the end index.")
-        return ""
+#     # Ensure start and end indices are valid
+#     if answer_start >= answer_end:
+#         print("Invalid span found: Start index is after the end index.")
+#         return ""
     
-    # Convert tokens to answer string
-    answer_tokens = tokenizer.convert_ids_to_tokens(inputs["input_ids"][0][answer_start:answer_end])
-    answer = tokenizer.convert_tokens_to_string(answer_tokens)
-    return answer
+#     # Convert tokens to answer string
+#     answer_tokens = tokenizer.convert_ids_to_tokens(inputs["input_ids"][0][answer_start:answer_end])
+#     answer = tokenizer.convert_tokens_to_string(answer_tokens)
+#     return answer
 
 
-def qa_model(user_input):
-    # Example context — in a real application, the context should be relevant to the user's question
-    context = "Contextual information relevant to the user's question."
-    return answer_question(user_input, context)
+# def qa_model(user_input):
+#     # Example context — in a real application, the context should be relevant to the user's question
+#     context = "Contextual information relevant to the user's question."
+#     return answer_question(user_input, context)
 
 
-class ChatAPIView(APIView):
-    def post(self, request):
-        user_input = request.data.get('input', None)
-        if not user_input:
-            return Response({'error': 'No input provided'}, status=status.HTTP_400_BAD_REQUEST)
+# class ChatAPIView(APIView):
+#     def post(self, request):
+#         user_input = request.data.get('input', None)
+#         if not user_input:
+#             return Response({'error': 'No input provided'}, status=status.HTTP_400_BAD_REQUEST)
         
-        answer = qa_model(user_input)  # Adapt this to call your QA model correctly
+#         answer = qa_model(user_input)  # Adapt this to call your QA model correctly
         
-        return Response({'response': answer})
+#         return Response({'response': answer})
+
 
 
 
@@ -82,6 +117,7 @@ class ChatAPIView(APIView):
 
 
 
+
 # from rest_framework.views import APIView
 # from rest_framework.response import Response
 # from rest_framework import status
@@ -99,8 +135,11 @@ class ChatAPIView(APIView):
 #         response_text = responses[0]['generated_text']
 #         return Response({'response': response_text})
 
-    
-    
+
+
+
+
+
 
 # from transformers import GPT2Tokenizer
 
