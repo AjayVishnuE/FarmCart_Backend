@@ -32,3 +32,7 @@ class LocationSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class UserReadUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser 
+        fields = ['id', 'username', 'email', 'mobile', 'user_image', 'password', 'role']

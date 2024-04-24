@@ -1,4 +1,5 @@
 from django.db import models
+
 import uuid
 
 class CustomUser(models.Model):
@@ -11,7 +12,7 @@ class CustomUser(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
     role = models.CharField(max_length=8, choices=ROLE_CHOICES)
-    user_image = models.ImageField(upload_to='images/user', null=True, blank=True)
+    user_image = models.ImageField(upload_to='images/user', null=True, blank=True, default='images/user/default_user_image.png')
     mobile = models.CharField(max_length=20, default = "0000000000")
     location_latitude = models.CharField(max_length=100,  null=True, blank=True)
     location_longitude = models.CharField(max_length=100,  null=True, blank=True)
@@ -89,6 +90,16 @@ class Wishlist(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'Consumer'})
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
+
+def update_farmer_rating(farmer):
+    products = Product.objects.filter(seller=farmer)
+    if products.exists():
+        average_rating = products.aggregate(models.Avg('product_rating'))['product_rating__avg']
+        farmer_details = FarmerDetails.objects.get(user=farmer)
+        farmer_details.farmer_rating = round(average_rating, 1)
+        farmer_details.save()
+
+
 class Review(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -96,6 +107,17 @@ class Review(models.Model):
     rating = models.CharField(max_length=5)
     comment = models.TextField()
     review_datetime = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_product_rating()
+
+    def update_product_rating(self):
+        reviews = Review.objects.filter(product=self.product)
+        average_rating = reviews.aggregate(models.Avg('rating'))['rating__avg']
+        self.product.product_rating = round(average_rating, 1)  # Assuming 'product_rating' can handle decimals.
+        self.product.save()
+        update_farmer_rating(self.product.seller)
 
 class Search(models.Model):
     search_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -111,3 +133,5 @@ class FarmerDetails(models.Model):
     farmer_rating = models.CharField(max_length=5)
     farms = models.TextField()
     Verified = models.BooleanField(default=True)
+
+

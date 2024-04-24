@@ -53,8 +53,6 @@ class CartCrudView(APIView):
             user_id = UUID(user_id)  
 
             cart_product = Cart.objects.get(cart_id=cart_id)
-            print(cart_product.user.id)
-            print(user_id)
             if cart_product.user.id == user_id: 
                 cart_product.delete()
                 return Response({'message': 'Product deleted'}, status=status.HTTP_204_NO_CONTENT)

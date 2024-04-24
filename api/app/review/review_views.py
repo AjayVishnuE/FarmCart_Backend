@@ -18,14 +18,17 @@ class CreateReviewAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 class RetrieveReviewAPIView(APIView):
     def get(self, request, product_id):
         token = request.headers.get('Authorization', None)
         user_id = get_user_id(token)
         review = get_object_or_404(Review, product=product_id, reviewer=user_id)
-        serializer = ReviewSerializer(review)
-        return Response(serializer.data)
+        if review:
+            serializer = ReviewSerializer(review)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_404_NOT_FOUND)
     
 class UpdateReviewAPIView(APIView):
     def put(self, request, uuid):

@@ -12,8 +12,8 @@ from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from django.contrib.auth.hashers import make_password, check_password
 
 from api.models import CustomUser, OTPVerification
-from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer, LocationSerializer
 from .authentication import create_access_token, create_refresh_token, decode_access_token, decode_refresh_token, get_user_id
+from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer, LocationSerializer, UserReadUpdateSerializer
 
 class RegistrationAPIView(APIView):
     def post(self, request):
@@ -163,3 +163,25 @@ class UsernameView(APIView):
             return JsonResponse({"username":user.username,"role":user.role}, status=200)
         except CustomUser.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
+
+class EditUserView(APIView):
+    def get(Self, request):
+        token = request.headers.get('Authorization', None)
+        user_id = get_user_id(token)
+        user = CustomUser.objects.get(id=user_id)
+        serializer = UserReadUpdateSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request):
+        try:
+            token = request.headers.get('Authorization', None)
+            user_id = get_user_id(token)
+            user = CustomUser.objects.get(id=user_id)
+        except user.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = UserReadUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()  
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
