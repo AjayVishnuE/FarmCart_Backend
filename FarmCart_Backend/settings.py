@@ -84,14 +84,14 @@ WSGI_APPLICATION = 'FarmCart_Backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': decouple_config("NAME"),
-        'USER': decouple_config("USER"),
-        'PASSWORD': decouple_config("PASSWORD"),
-        'HOST': decouple_config("HOST"),
-        'PORT': decouple_config("PORT"),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': decouple_config("NAME"),
+        # 'USER': decouple_config("USER"),
+        # 'PASSWORD': decouple_config("PASSWORD"),
+        # 'HOST': decouple_config("HOST"),
+        # 'PORT': decouple_config("PORT"),
     }
 }
 
