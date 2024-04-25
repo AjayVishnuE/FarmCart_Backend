@@ -1,6 +1,7 @@
-# from django.urls import path
-# from .chats_views import ChatAPIView
+from django.urls import path
+from .chats_views import ChatbotView, ComplaintAPIView
 
-# urlpatterns = [
-#     path('chat/', ChatAPIView.as_view(), name='chat-gpt'),
-# ]
+urlpatterns = [
+    path('chat/', ChatbotView.as_view(), name='chatbot'),
+    path('complaint/', ComplaintAPIView.as_view(), name='complaint-api'),
+]

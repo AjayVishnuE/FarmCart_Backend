@@ -1,6 +1,40 @@
+from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
+from .data import RESPONSES
+from api.models import CustomUser
+from api.user.authentication import get_user_id
+from .chats_serializer import ChatSerializer, ComplaintSerializer
 
+class ChatbotView(APIView):
+    def post(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization', None)
+        user_id = get_user_id(token)  
+        message = request.data['message']
+        serializer = ChatSerializer(data=request.data)
+        if serializer.is_valid():
+            user_message = serializer.validated_data['message'].lower()
+            response_message = RESPONSES.get(user_message, "Sorry, I don't understand that.")
+            return Response({'message': message, 'response': response_message})
+        return Response(serializer.errors, status=400)
 
+class ComplaintAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization', None)
+        user_id = get_user_id(token)
+        if user_id is None:
+            return Response({"error": "Authentication credentials were not provided or are invalid."}, status=401)
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            raise Http404("No user found with this ID")
+
+        serializer = ComplaintSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
 
 

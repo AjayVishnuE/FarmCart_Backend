@@ -1,0 +1,27 @@
+RESPONSES = {
+    "hi": "Hello! How can I help you today?",
+    "need help": "Sure, I'm here to help! What do you need?",
+    "how to cancel my order": "To cancel your order, please go to your orders page, select the order and click on 'Cancel'.",
+    "connect me with your customer care": "Your complaint has been registered and our team will contact you shortly.",
+    "where do you deliver": "We deliver to all major cities across the country. You can specify your location to see if we deliver to your area!",
+    "how to change delivery address": "You can change your delivery address from your account settings or during the checkout before finalizing your order.",
+    "what are your delivery times": "Our delivery times are from 8 AM to 6 PM on weekdays. Weekend deliveries vary based on your location.",
+    "do you have organic carrots": "Yes, we have organic carrots available! You can add them to your cart directly from the 'Vegetables' section.",
+    "how to apply a promo code": "You can apply a promo code at the checkout page. Just enter your code in the 'Promo Code' field and click apply.",
+    "are your vegetables pesticide free": "Absolutely! All our vegetables are 100% organic and free from any pesticides or harmful chemicals.",
+    "can I pick up my order": "Yes, you can choose to pick up your order at our nearest store location. Just select 'Pick Up' option during checkout.",
+    "how to track my order": "You can track your order status from your account under the 'Orders' section. We also send email updates as your order progresses!",
+    "payment methods available": "We accept all major credit cards, debit cards, and mobile payments through secure online transactions.",
+    "how to return an item": "To return an item, please visit your order history and select the item you wish to return. Follow the instructions provided to initiate a return.",
+    "account creation benefits": "Creating an account allows you to check out faster, save multiple shipping addresses, access your order history, and manage your preferences.",
+    "help with account login": "If you're having trouble logging into your account, try resetting your password or contact customer support for assistance.",
+    "location based sorting": "Our website automatically sorts products based on your location to show you the freshest vegetables available in your area. Make sure your location services are enabled!",
+    "what is organic farming": "Organic farming is a method of crop and livestock production that involves much more than choosing not to use pesticides, fertilizers, genetically modified organisms, antibiotics, and growth hormones. It is a holistic system designed to optimize the productivity and fitness of diverse communities within the ecosystem.",
+    "benefits of organic food": "Organic foods are not just good for the body, but they're also good for the environment. They reduce pollutants in groundwater and create richer soil that aids plant growth while reducing erosion. It also means safer working conditions for farmers and the reduction of greenhouse gases.",
+    "how do we ensure organic integrity": "Our farms are certified organic following stringent standards that assure the organic integrity of our products from the farm to your table. This includes regular inspections and detailed record-keeping.",
+    "why are organic products more expensive": "Organic foods are more labor-intensive since the farmers do not use pesticides, chemical fertilizers, or drugs. Organic certification is expensive and organic feed for animals can cost twice as much.",
+    "do organic farmers use pesticides": "Organic farmers use natural pesticides approved for organic farming. They also use beneficial insects and birds, mating disruption or traps to manage pests and diseases.",
+    "how to store organic vegetables": "Keep your organic vegetables in a cool, dry place. For leafy greens, wrap them in a damp cloth and store in the refrigerator to maintain freshness.",
+    "is organic food really better for you": "Many studies have shown that organic foods contain more beneficial nutrients, such as antioxidants, than their conventionally grown counterparts. Moreover, people with allergies to foods, chemicals, or preservatives often find their symptoms lessen or go away when they eat only organic foods."
+}
+

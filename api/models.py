@@ -134,4 +134,7 @@ class FarmerDetails(models.Model):
     farms = models.TextField()
     Verified = models.BooleanField(default=True)
 
+class Complaints(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    complaint = models.TextField()
 
