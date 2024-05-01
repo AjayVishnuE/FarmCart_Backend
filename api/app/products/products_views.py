@@ -11,26 +11,21 @@ from api.user.authentication import get_user_id
 from .products_serializer import ProductSerializer, ProductDetailsSerializer, SellerProductDetailSerializer
 
 def haversine(lon1, lat1, lon2, lat2):
-    # Convert decimal degrees to radians
     lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-    # Haversine formula
     dlon = lon2 - lon1
     dlat = lat2 - lat1
     a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
     c = 2 * asin(sqrt(a))
-    r = 6371  # Radius of Earth in kilometers
+    r = 6371  
     return c * r
 
 class ProductsListView(APIView):
     def get(self, request):
-        # Get the logged-in user's ID
         token = request.headers.get('Authorization', None)
         user_id = get_user_id(token)
-        # Retrieve the logged-in user's location
         user = CustomUser.objects.get(id=user_id)
         user_location = (float(user.location_latitude), float(user.location_longitude))
 
-        # Find sellers within a 30km radius
         nearby_sellers_ids = []
         for seller in CustomUser.objects.filter(role='Farmer'):
             seller_location = (float(seller.location_latitude), float(seller.location_longitude))
@@ -38,7 +33,6 @@ class ProductsListView(APIView):
             if distance <= 30:
                 nearby_sellers_ids.append(seller.id)
         
-        # Retrieve products from these sellers
         products = Product.objects.filter(seller_id__in=nearby_sellers_ids)
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser,Product, Order, OrderDetail, Cart, Wishlist,Review,FarmerDetails,Address
+from .models import CustomUser,Product, Order, OrderDetail, Cart, Wishlist,Review,FarmerDetails,Address,Complaints
 
 admin.site.register(CustomUser)
 admin.site.register(Product)
@@ -10,7 +10,7 @@ admin.site.register(Wishlist)
 admin.site.register(Review)
 admin.site.register(FarmerDetails)
 admin.site.register(Address)
-
+admin.site.register(Complaints)
 
 
 
