@@ -99,7 +99,6 @@ def update_farmer_rating(farmer):
         farmer_details.farmer_rating = round(average_rating, 1)
         farmer_details.save()
 
-
 class Review(models.Model):
     review_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -137,4 +136,16 @@ class FarmerDetails(models.Model):
 class Complaints(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     complaint = models.TextField()
+
+class Notification(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE) 
+    title = models.CharField(max_length=255)
+    redirect = models.CharField(max_length=255)
+    message = models.TextField()
+    read_status = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.user.username} - {self.title}"
 

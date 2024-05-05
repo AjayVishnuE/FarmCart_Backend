@@ -37,6 +37,5 @@ class SellerOrdersAPIView(APIView):
         except CustomUser.DoesNotExist:
             return Response({'message': 'Seller not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Now pass seller to the context of the serializer
         serializer = SellerOrdersSerializer(seller, context={'user': seller})
         return Response(serializer.data, status=status.HTTP_200_OK)

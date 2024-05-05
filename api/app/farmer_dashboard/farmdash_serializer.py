@@ -1,44 +1,28 @@
 from rest_framework import serializers
-from api.models import CustomUser, Product, Order, OrderDetail, FarmerDetails
+from api.models import CustomUser, Product, FarmerDetails
+from django.db.models import Sum, F
 
-class FarmDetailsSerializer(serializers.ModelSerializer):
+class FarmerDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = FarmerDetails
-        fields = ['farms']
+        fields = ('farms',)
 
-class ProductDetailSerializer(serializers.ModelSerializer):
-    farms = serializers.SerializerMethodField()
+class ProductSerializer(serializers.ModelSerializer):
+    product_image = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Product
-        fields = ['product_name', 'product_image', 'farms', 'quantity']
+        fields = ('product_name', 'product_image', 'quantity')
 
-    def get_farms(self, obj):
-        if isinstance(obj, Product):
-            farmer_details = FarmerDetails.objects.filter(user=obj.seller).first()
-            return FarmDetailsSerializer(farmer_details).data
-        else:
-            return None
+class ProductSalesSerializer(serializers.ModelSerializer):
+    sold_quantity = serializers.IntegerField()
 
-class UserProductOrdersSerializer(serializers.Serializer):
-    username = serializers.CharField(source='user.username')  
-    num_recent_orders = serializers.IntegerField()
-    total_orders = serializers.IntegerField()
-    product_details = ProductDetailSerializer(many=True)
-    sold_products = serializers.SerializerMethodField()
-    top_sold_product = serializers.SerializerMethodField()
+    class Meta:
+        model = Product
+        fields = ('product_name', 'sold_quantity')
 
-    def get_sold_products(self, obj):
-        products = Product.objects.filter(seller=obj['user'])
-        return [{'product_name': product.product_name, 'sold_quantity': product.sold_quantity} for product in products]
-    
-    def get_top_sold_product(self, obj):
-            user = obj['user']
-            top_sold_product = Product.objects.filter(seller=user).order_by('-sold_quantity').first()
-            if top_sold_product:
-                return {
-                    'product_name': top_sold_product.product_name,
-                    'sold_quantity': top_sold_product.sold_quantity
-                }
-            return None
+class TopSoldProductSerializer(serializers.Serializer):
+    product_name = serializers.CharField(max_length=100)
+    sold_quantity = serializers.IntegerField()
+
 

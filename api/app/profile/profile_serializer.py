@@ -4,7 +4,7 @@ from api.models import CustomUser, Order, OrderDetail, Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('product_id','product_name', 'product_image', 'price')
+        fields = ('product_id', 'product_name', 'product_image', 'price')
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)
@@ -42,8 +42,8 @@ class CustomOrderSerializer(serializers.ModelSerializer):
         fields = ('order_id', 'total_price', 'order_status', 'custom_order_details')
 
     def get_custom_order_details(self, obj):
-        user = self.context['user'] 
-        order_details = obj.orderdetail_set.filter(product__seller=user)
+        user = self.context['user']
+        order_details = obj.orderdetail_set.filter(product__seller=user).order_by('-order__order_datetime')
         return CustomOrderDetailSerializer(order_details, many=True, read_only=True).data
 
 class SellerOrdersSerializer(serializers.ModelSerializer):
@@ -54,6 +54,6 @@ class SellerOrdersSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'user_image', 'user_orders')
 
     def get_user_orders(self, obj):
-        orders = Order.objects.filter(orderdetail__product__seller=obj).distinct()
+        orders = Order.objects.filter(orderdetail__product__seller=obj).order_by('-order_datetime').distinct()
         context = {'user': obj}
         return CustomOrderSerializer(orders, many=True, context=context).data

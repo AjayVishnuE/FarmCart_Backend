@@ -14,4 +14,6 @@ urlpatterns = [
     path('farmerdashboard/', include('api.app.farmer_dashboard.urls')),
     path('farmerdetails/', include('api.app.farmerdetails.urls')),
     path('review/', include('api.app.review.urls')),
+    path('notification/', include('api.app.notification.urls')),
+
 ]
