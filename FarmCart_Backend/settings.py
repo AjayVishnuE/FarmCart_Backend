@@ -155,7 +155,9 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://farmcartapp.netlify.app"
+    "https://farmcartapp.netlify.app",
+    "http://127.0.0.1:5500/",
+    "https://farm-cart.netlify.app/"
 ]
 
 
