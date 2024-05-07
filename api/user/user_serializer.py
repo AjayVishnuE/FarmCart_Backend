@@ -36,3 +36,19 @@ class UserReadUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser 
         fields = ['id', 'username', 'email', 'mobile', 'user_image', 'password', 'role']
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        return value
+
+    def save(self):
+        email = self.validated_data['email']
+        new_password = self.validated_data['new_password']
+        
+        user = CustomUser.objects.get(email=email)
+        user.password = make_password(new_password)
+        user.save()
+        return user

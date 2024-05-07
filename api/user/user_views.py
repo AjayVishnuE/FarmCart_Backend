@@ -13,7 +13,7 @@ from django.contrib.auth.hashers import make_password, check_password
 
 from api.models import CustomUser, OTPVerification
 from .authentication import create_access_token, create_refresh_token, decode_access_token, decode_refresh_token, get_user_id
-from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer, LocationSerializer, UserReadUpdateSerializer
+from .user_serializer import CustomUserSerializer, ForgotPasswordSerializer, OTPVerificationSerializer, LocationSerializer, UserReadUpdateSerializer, ResetPasswordSerializer
 
 class RegistrationAPIView(APIView):
     def post(self, request):
@@ -183,5 +183,17 @@ class EditUserView(APIView):
         if serializer.is_valid():
             serializer.save()  
             return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class ResetPasswordView(APIView):
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                user = serializer.save()
+                return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
+            except CustomUser.DoesNotExist:
+                return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
