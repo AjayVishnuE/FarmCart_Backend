@@ -94,7 +94,7 @@ class ForgotPasswordView(APIView):
             print(otp)
             send_mail(
                 'Reset Your Password',
-                f'Your OTP is {otp}.',
+                f'Your OTP to reset your forgotten password is {otp}.',
                 'teamfarmcart@gmail.com',  
                 [email],
                 fail_silently=False,
