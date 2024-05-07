@@ -10,9 +10,14 @@ class DownloadCountView(APIView):
         serializer = DownloadCountSerializer(download_counts, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
-        serializer = DownloadCountSerializer(data=request.data)
+    def patch(self, request, pk):
+        try:
+            download_count = DownloadCount.objects.get(pk=pk)
+        except DownloadCount.DoesNotExist:
+            return Response({'error': 'Download count not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = DownloadCountSerializer(download_count, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
