@@ -14,5 +14,7 @@ admin.site.register(Search)
 admin.site.register(FarmerDetails)
 admin.site.register(Complaints)
 admin.site.register(Notification)
+admin.site.register(DownloadCount)
+
 
 
