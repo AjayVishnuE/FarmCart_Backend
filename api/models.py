@@ -149,3 +149,9 @@ class Notification(models.Model):
     def __str__(self):
         return f"Notification for {self.user.username} - {self.title}"
 
+class DownloadCount(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    quantity = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"DownloadCount: {self.quantity}"

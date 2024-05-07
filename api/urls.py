@@ -15,5 +15,6 @@ urlpatterns = [
     path('farmerdetails/', include('api.app.farmerdetails.urls')),
     path('review/', include('api.app.review.urls')),
     path('notification/', include('api.app.notification.urls')),
+    path('downloadcount/', include('api.app.downloadcount.urls')),
 
 ]
