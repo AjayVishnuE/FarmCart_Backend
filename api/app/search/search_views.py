@@ -51,26 +51,19 @@ class CombinedSearchesAPIView(APIView):
         token = request.headers.get('Authorization', None)
         user_id = get_user_id(token)
 
-        # Get recent searches
         recent_searches = Search.objects.filter(user_id=user_id).order_by('-created_at')[:10]
         recent_search_keywords = recent_searches.values_list('search_keyword', flat=True)
-        # Get products for recent searches
         recent_products = Product.objects.filter(product_name__in=recent_search_keywords)
 
-        # Serialize recent search queries
         recent_search_serializer = SearchSerializer(recent_searches, many=True)
-        # Serialize recent products
         recent_product_serializer = ProductSerializer(recent_products, many=True)
 
-        # Get frequent search keywords from the last 3 days
         one_day_ago = timezone.now() - timezone.timedelta(days=3)
         frequent_searches = Search.objects.filter(created_at__gte=one_day_ago)
         search_counts = frequent_searches.values('search_keyword').annotate(total=Count('search_keyword')).order_by('-total')[:10]
 
-        # Map the frequent search keywords to product names
         frequent_keywords = [search['search_keyword'] for search in search_counts]
         frequent_products = Product.objects.filter(product_name__in=frequent_keywords)
-        # Order the products by frequency of search
         sorted_frequent_products = sorted(frequent_products, key=lambda x: frequent_keywords.index(x.product_name) if x.product_name in frequent_keywords else len(frequent_keywords))
 
         frequent_product_serializer = ProductSerializer(sorted_frequent_products, many=True)
@@ -80,6 +73,7 @@ class CombinedSearchesAPIView(APIView):
             'recent_searches': recent_product_serializer.data,
             'frequent_searches': frequent_product_serializer.data
         })
+
 
 # class RecentUserSearchesAPIView(APIView):
 #     def get(self, request):

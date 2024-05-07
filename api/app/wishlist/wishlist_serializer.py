@@ -14,7 +14,7 @@ class WishlistSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('product_id', 'product_name', 'product_image', 'price')
+        fields = ('product_id', 'product_name', 'product_image', 'price', 'quantity')
 
 class WishlistGetSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)
