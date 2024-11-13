@@ -1,5 +1,5 @@
 ﻿<div>
-<img src="./Images/farmcartcolorlogo.svg" width=200>
+<img src="./media/images/farmcartcolorlogo.svg" width=200>
 </div>
 
 # FarmCart App: Farm Fresh to all
